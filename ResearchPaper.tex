@@ -30,15 +30,15 @@ Email: k.kredit.us@ieee.org}
 
 
 \begin{abstract}
-Level 2 switches bear great responsibility in LAN security. Detecting rogue switches, however, is
+Though level 2 switches bear great responsibility in LAN security, detecting rogue switches is
 difficult. This paper reviews the threat landscape around switches, overviews rogue switch
 prevention measures, and proposes a new double-pronged rogue switch prevention and detection
 mechanism. The first prong is TPM-enalbed remote attestation of switches and setting configurations.
 The second prong is behavioral verification of switches using generated traffic. The tool leverages
 defined switch behavior and the presence of switch security features to detect mis-configured and
 potentially malicious switches. Together, the forms of verification support strong assurance as well
-as backwards compatibility. Finally, a set of policies designed to create a trusted network backbone
-is described.
+as backwards hardware compatibility. Finally, a set of policies designed to create a trusted
+network backbone is described.
 
 \iffalse
 Switches have several built-in security features. Most are of the pattern (1) create rule for a
@@ -69,7 +69,7 @@ integrity, and availability of network services. Switches face threats to their 
 functionality as well as their features designed to secure higher level protocols.
 % TODO add some more details here after elaborate in Threats section
 
-As the threats of a compromised switch are so significant, a number of prevention-oriented
+As the threat to a LAN from a compromised switch is so significant, a number of prevention-oriented
 mitigations already exist. However, the impact of a compromised switch is great enough to warrant
 further research, particularly in how to detect rogue switches.
 
@@ -77,12 +77,12 @@ further research, particularly in how to detect rogue switches.
 How does one detect a disobedient network switch? One method is passive detection, usually by
 observing network traffic and parsing it for suspicious behavior. This approach lies solidly within
 the realm of intrusion detection systems (IDSs). Machine learning promises a new level of
-effectiveness for this method, though it is historically only partially effective and by its nature
-offers only probabilistic advice.
+effectiveness for IDSs, though they is historically only partially effective and by their nature
+offer only probabilistic insight.
 
 A second method is proactive verification. This approach could take two forms: self-verification
-and behavioral verification. Self-verification means using switch attestation to validate that the
-switch is running trusted firmware as well as booting into an approved configuration. Behavioral
+and behavioral verification. Self-verification means using switch attestation to validate that it
+is running trusted firmware as well as booting into an approved configuration. Behavioral
 verification means running the switch through a suite of tests and verifying correct behavior.
 % INFO see https://en.wikipedia.org/wiki/Verification_and_validation
 
@@ -104,14 +104,13 @@ network backbone.
 % impact: the badness that occurs as a result of a realized threat
 % risk: threat (likeliness) x impact
 
-There are many ways to classify security considerations. Here, switch security is classified
+One could classify switch security threats many ways. In this paper, switch security is classified
 according to threats inherent in its network position and threats relating to higher level
 protocols.
 
 For better or for worse, the switch's role in network security is not limited to switching packets
-correctly. As arbiter of LAN access, switches have been tasked with enforcing policies on several
-higher level protocols that assume particular network behavior. This type of threat is analyzed
-separately.
+correctly. As arbiter of LAN access, switches have been tasked with enforcing policies on higher
+level protocols that assume particular network behavior. This type of threat is analyzed separately.
 
 \subsection{Inherent Security Threats}
 The switch's core job is route packets on a LAN from one level 2 host to another. To perform its
@@ -125,8 +124,8 @@ integrity, and availability:
   \item Denial of service (availability)
 \end{enumerate}
 
-Traffic redirection is to route packets to the wrong or an additional port, or even to store packets
-internally. This can be used for man-in-the-middle (MITM) or exfiltration attacks. Traffic
+Traffic redirection is to route packets to the wrong port, an additional port, or even to internal
+storage. Redirection can be used for man-in-the-middle (MITM) or exfiltration attacks. Traffic
 modification is to rewrite data as it passes through the switch. This is an MITM attack. Denial of
 service is failing to deliver packets at all. This could be done selectively or completely. All
 three could be designed to evade IDSs. Redirection could be to internal storage, which would leave
@@ -145,66 +144,72 @@ confidentiality (misrouted packets) and denial of service (poor network performa
 
 \subsubsection{MAC Address Spoofing} While MAC address spoofing is an element of the CAM overflow
 attack, a MAC address spoof attack is oriented not at overwhelming the switch, but at impersonating
-a valid MAC address so that the switch updates the CAM table entry and subsequently forwards
-traffic intended for the valid host to the malicious host \cite{b1}. This is a confidentiality
-attack that enables MITM.
+another host's valid MAC address so that the switch updates its CAM table entry and subsequently
+forwards future traffic intended for the valid host to the malicious host \cite{b1}. This is a
+confidentiality attack that enables MITM.
 
 \subsection{Higher Level Protocols}
 Many core networking protocols are designed assuming trust within the LAN. DHCP assumes only one
 server (or set of distributed but coordinated servers) exists per LAN. ARP assumes hosts will not
-lie. Due to mis-configurations and malicious behavior, those assumptions are frequently wrong.
-Because of the switch's role as gatekeeper between a host and the LAN, it is a convenient place to
-implement defenses against attacks on these higher level protocols.
+lie about their identity. Due to mis-configuration and malicious behavior, such assumptions are
+frequently wrong. Because of the switch's role as gatekeeper between a host and the LAN, it is a
+convenient place to implement defenses against attacks on these higher level protocols.
 
 % TODO finalize scope of this paper
-This paper focuses not on how to configure switch security features, but on the effect rogue
-switches have to network security and how to detect them. The threat considered here is not ``rogue
+This paper focuses not on how to configure the switch security features that defend DHCP and ARP,
+but on rogue switch security implications and detection. The threat considered here is not ``rogue
 DHCP'' or ``ARP spoofing,'' but that of a compromised switch which uses misapplications of these
-security features to enable further attacks. To that end, switch security features both have an
-effect on the potential impact of rogue switches and provide a possible means for rogue switch
-detection.
+security features to enable further attacks. For example, a compromised switch could block the valid
+DHCP server and enable a rogue DHCP server.
 
-Two protocols that switches protect are DHCP and ARP. Both have high impacts on confidentiality and
-availability. DHCP attacks also impact integrity if the rogue DHCP server sends wrong router and
-default gateway addresses.
+In order to understand the impacts of a rogue switch, therefore, one must understand their high
+level protocol security features. In addition to their importance to rogue switch impact, these
+features provide a possible means for rogue switch detection.
 
-\subsubsection{DHCP Snooping} DHCP is susceptible to spoofing and starvation; switch DHCP snooping
-enables DHCP offer filtering and generation of a DHCP binding table used to validate incoming
-packets and limit the number of IP addresses on a port \cite{b2}.
+Two protocols that switches protect are DHCP and ARP. Both have clear impacts on confidentiality and
+availability. DHCP attacks impact integrity if the rogue DHCP server sends wrong router and
+default gateway addresses. ARP attacks impact integrity if they are used to perform MITM attacks.
+
+\subsubsection{DHCP Snooping} DHCP is susceptible to spoofing and starvation; DHCP snooping is a
+switch security feature that enables DHCP offer filtering and generation of a DHCP binding table
+used to validate incoming packets and limit the number of IP addresses on a port \cite{b2}.
 
 \subsubsection{Dynamic ARP Inspection} ARP is used by hosts to tie IP addresses to MAC addresses.
-ARP is susceptible to spoofing and ``poisoning''; dynamic ARP inspection (DAI) uses the DHCP
-snooping binding table to validate ARP messages before forwarding them \cite{b2}.
+ARP is susceptible to spoofing and ``poisoning''; dynamic ARP inspection (DAI) is a switch security
+feature that uses the DHCP snooping binding table to validate ARP messages before forwarding them
+\cite{b2}.
 
 \subsection{Threat Summary}
-Threats are summarized here, according to the CIA triad:
+The switch security threats described in the previous sections are summarized here, organized
+according to the CIA triad:
 \begin{enumerate}
   \item Confidentiality
   \begin{enumerate}
     \item misrouted packets
     \item internally stored packets
     \item fall back to hub (all packets broadcast)
-    \item compromised DHCP defense
-    \item compromised ARP defense
+    \item compromised DHCP defense (rogue DHCP)
+    \item compromised ARP defense (MITM)
   \end{enumerate}
   \item Integrity
   \begin{enumerate}
     \item traffic modification
     \item incorrect MAC to port mapping, enabling MITM
-    \item compromised DHCP defense
-    \item compromised ARP defense
+    \item compromised DHCP defense (rogue DHCP)
+    \item compromised ARP defense (MITM)
   \end{enumerate}
   \item Availability
   \begin{enumerate}
     \item denial of service
     \item fall back to hub (decreased performance)
+    \item compromised DHCP defense (exhausted DHCP)
+    \item compromised ARP defense (poisoned tables)
   \end{enumerate}
 \end{enumerate}
 
 \subsection{Threat Vectors}
 Given the high impacts of rogue switches, the pressing question is ``how could a rogue switch be
 introduced to the network?'' The possibilities are as follows:
-
 \begin{enumerate}
   \item A valid switch could be compromised via
   \begin{enumerate}
@@ -232,16 +237,19 @@ x-marks (\xmark) designate lesser dangers.
       \hline
       \multicolumn{1}{|c}{\textbf{Switch}} & \multicolumn{6}{|c|}{\textbf{Threat Vector}} \\
                                                                                         \cline{2-7}
-      \multicolumn{1}{|c|}{\textbf{Attack}} & \textbi{1a} & \textbi{1b} & \textbi{1c} & \textbi{1d}
+      \multicolumn{1}{|c|}{\textbf{Threat}} & \textbi{1a} & \textbi{1b} & \textbi{1c} & \textbi{1d}
                                                               & \textbi{2a} & \textbi{2b} \\ \hline
-      Redirection               &        &        & \cmark & \cmark & \cmark & \cmark \\ \hline
-      Modification              & \xmark & \xmark & \cmark & \cmark & \cmark & \cmark \\ \hline
-      DoS                       &        & \cmark & \cmark & \cmark & \cmark & \cmark \\ \hline
-      CAM overflow              & \cmark & \xmark & \cmark & \cmark & \cmark & \cmark \\ \hline
-      MAC spoofing              & \cmark & \xmark & \cmark & \cmark & \cmark & \cmark \\ \hline
-      Comp. DHCP$^{\mathrm{a}}$ & \xmark & \cmark & \cmark & \cmark & \cmark & \cmark \\ \hline
-      Comp. ARP$^{\mathrm{a}}$  & \xmark & \cmark & \cmark & \cmark & \cmark & \cmark \\ \hline
-      \multicolumn{7}{l}{$^{\mathrm{a}}$Compromised switch security features.}
+      1(a) &        &        & \cmark & \cmark & \cmark & \cmark \\ \hline
+      1(b) & \xmark & \xmark & \cmark & \cmark & \cmark & \cmark \\ \hline
+      1(c) &        & \cmark & \cmark & \cmark & \cmark & \cmark \\ \hline
+      1(d) & \cmark & \xmark & \cmark & \cmark & \cmark & \cmark \\ \hline
+      1(e) & \cmark & \xmark & \cmark & \cmark & \cmark & \cmark \\ \hline
+      2(a) & \xmark & \cmark & \cmark & \cmark & \cmark & \cmark \\ \hline
+      2(b) & \xmark & \cmark & \cmark & \cmark & \cmark & \cmark \\ \hline
+      2(c) &        & \cmark & \cmark & \cmark & \cmark & \cmark \\ \hline
+      2(d) & \cmark & \xmark & \cmark & \cmark & \cmark & \cmark \\ \hline
+      3(a) & \xmark & \cmark & \cmark & \cmark & \cmark & \cmark \\ \hline
+      3(b) & \xmark & \cmark & \cmark & \cmark & \cmark & \cmark \\ \hline
     \end{tabular}
     \label{table:vectors}
   \end{center}
@@ -277,14 +285,14 @@ x-marks (\xmark) designate lesser dangers.
 \section{Current Mitigations}
 
 \subsection{Basics}
-No clever security invention replaces the need for strong fundamentals. A few necessary first steps
+No new security invention replaces the need for strong fundamentals. A few necessary first steps
 are presented before this paper's contribution is considered.
 
 \subsubsection{Password management}
-Changing switches' administrative credentials from the default is the first
-step in securing the level 2 network. Changing the credentials is more important than physical
-security because failing to do so enables effortless, automated remote compromise. Even if the
-organization does not intend to implement the available security features, changing the default
+Changing switches' administrative credentials from the default is the first step in securing the
+level 2 network. Changing the credentials is more important than enforcing physical security
+because failing to do so enables effortless, automated remote compromise. Even if the organization
+does not intend to implement switches' available security features, changing the default
 credentials is necessary to prevent an attacker from configuring the switch to his interests. This
 mitigates threat vector 1(b), stolen management credentials.
 
@@ -301,19 +309,19 @@ software patches, they should be applied in a timely manner. This mitigates thre
 host sending malicious traffic, and 1(c), a software vulnerability in the networking equipment.
 
 \subsubsection{Implementing available security features}
-After the previous steps have been taken, implementing the available security
-features offered is the next logical step, and indeed is a prerequisite for the active verification
-approach. MAC limiting, DHCP snooping, DAI, and port security mitigate threat vectors 1(a), a host
-sending malicious traffic, and 2(b), switch insertion at public facing ports \cite{b1}.
+After the previous steps have been taken, implementing the switches' available security features is
+the next logical step, and indeed is a prerequisite the more capable versions of the active
+verification approach. MAC limiting, DHCP snooping, DAI, and port security mitigate threat vectors
+1(a), a host sending malicious traffic, and 2(b), switch insertion at public facing ports \cite{b1}.
 
 
 \subsection{Encryption and Higher Level Protocols}
 % TODO e.g. https://www.senetas.com/products/cn-encryptors/ or
 %https://www.thalesesecurity.com/solutions/use-case/data-security-and-encryption/layer-2-encryption
-Instead of decreasing the likelihood, another valid approach is to decrease the impact of
-successful attacks. Using encryption in higher level protocols such as IPsec or TLS, or even using
-level 2 encryption \cite{b3} nearly eliminates a rogue switch's capability to violate
-confidentiality or integrity.
+When mitigating security risk, besides decreasing likelihood, decreasing the cost of successful
+attacks is another valid approach. Using encryption in higher level protocols such as IPsec, TLS,
+SSH, and SFTP, or even using level 2 encryption \cite{b3} nearly eliminates a rogue switch's
+capability to violate confidentiality or integrity.
 
 
 \subsection{IEEE 802.11i Wi-Fi Security}
@@ -333,11 +341,13 @@ point communication and have switches that arbitrate access.
 
 \section{Switch Self-authentication}
 The preferred way to detect and prevent rogue switches from joining a network is to place the
-burden on the switch. Using a Trusted Platform Module or similar remote attestation module would
-enable the network to verify that switches are operating trusted software stacks (if applicable) on
-trusted hardware. Such attestation methods for verifying client integrity are well understood
-\cite{b6}.
+verification burden on the switch. Using a Trusted Platform Module or similar remote attestation
+module would enable the network to verify that switches are operating trusted software stacks (if
+applicable) on trusted hardware. Such attestation methods for verifying client integrity are well
+understood \cite{b6}.
 
+% TODO could make a flow chart instead. Also, what if it is _not_ connected to a managed switch that
+% TODO is already part of the verified network?
 The basic authentication flow would be as follows:
 \begin{enumerate}
   \item A unknown switch joins the network. It is connected to a managed switch that is already
@@ -366,8 +376,9 @@ section \ref{sec:policies}.
 \section{The Behavioral Verification Tool}
 Self-authentication is the preferred means of switch validation. However, switches typically are
 outfitted with TPMs. Even if that were to begin, organizations would rightly not be able to justify
-the cost of updating the millions of deployed switches to gain this feature. In order to build a
-verified network backbone, there needs to be a way to validate currently deployed switches.
+the cost of updating the millions of deployed switches worldwide for the sake of this feature. In
+order to build a verified network backbone, there needs to be a way to validate currently deployed
+switches.
 
 This paper proposes a behavioral verification tool that establishes trust in switches by putting
 them through thorough tests. Such test-based trust is not as strong as attestation. All cases could
@@ -379,7 +390,7 @@ maliciously \textit{programmed} switch. This is a less likely threat, and can be
 addressed through the switch security policies. Second, as with attestation, tests would be
 repeated periodically, making test detection non-trivial.
 
-The behavior verification tool works by functionally testing corner cases as well as random samples
+The behavior verification tool works by functionally testing corner cases as well as random cases
 of each switch configuration policy. If a switch is correctly configured and acts as expected, it
 passes the tests. If a switch is mis-configured or acts in any unexpected way, it fails. Passing
 switches join the network as a verified element. Failing switches are treated according to the
