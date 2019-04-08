@@ -411,16 +411,18 @@ from an unknown to a known configuration.
 
 \subsection{Deployed Client-server Mode}
 This mode of the tool requires a server with knowledge of the network topology as well as clients
-running on suitable hosts. The server coordinates the clients generate a more thorough set of test
-traffic. Because of the additional nodes available to the tool, possibly including devices attached
-directly to the switch, the properties it can test in this mode are more thorough. The server still
-logs in to perform administrative functions on managed switches.
+running on suitable hosts. The server coordinates the clients to generate a more thorough set of
+test traffic. Because of the additional nodes available to the tool, possibly including devices
+attached directly to the switch, the properties it can test in this mode are more thorough. The
+server still logs in to perform administrative functions on managed switches.
+% TODO what protocols can we use to test things? ICMP, Echo, SNMP?
 
 \subsection{Test-bench Mode}
 This mode of the tool requires only a server, but requires that the switch be taken out of
 deployment. By sequentially testing each port of the switch with arbitrary traffic, the server is
 able to fully verify all the behavior expected of the switch. It begins by logging in to perform
 administrative functions on managed switches, then runs through the test suite.
+
 
 
 \section{Building a Verified Network Backbone} \label{sec:policies}
@@ -464,7 +466,6 @@ switch validation allows the creation of verified LAN backbones. TPM-based remot
 enables strong verification, while behavior-based verification enables backwards compatibility with
 currently deployed equipment. Both measures mitigate the threat of rogue switches through active
 prevention and detection.
-
 
 
 % \begin{equation}
