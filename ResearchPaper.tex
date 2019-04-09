@@ -341,10 +341,13 @@ point communication and have switches that arbitrate access.
 
 \section{Switch Self-authentication}
 The preferred way to detect and prevent rogue switches from joining a network is to place the
-verification burden on the switch. Using a Trusted Platform Module or similar remote attestation
-module would enable the network to verify that switches are operating trusted software stacks (if
-applicable) on trusted hardware. Such attestation methods for verifying client integrity are well
-understood \cite{b6}.
+verification burden on the switch.
+
+\subsection{Self-authentication with a TPM}
+Using a Trusted Platform Module would enable the network to
+verify that switches are operating trusted software stacks on trusted hardware. Such attestation
+methods for verifying client integrity are well understood \cite{b6}.
+% TODO expand on authentication a bit anyway
 
 % TODO could make a flow chart instead. Also, what if it is _not_ connected to a managed switch that
 % TODO is already part of the verified network?
@@ -370,6 +373,12 @@ security policy. This mitigates the remaining threat vectors.
 
 The ``network security policies'' relating to how to treat untrusted switches are discussed in
 section \ref{sec:policies}.
+
+\subsection{Self-authentication Without a TPM}
+Self-authentication can be achieved without a TPM if switches are pre-configured with a shared
+secret. While this allows self-authentication with current-generation hardware, it is vulnerable
+to spoofing if the secret is compromised and it is less automated as it requires manual
+configuration.
 
 
 
