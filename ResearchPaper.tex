@@ -41,6 +41,7 @@ as backwards hardware compatibility. Finally, a set of policies designed to crea
 network backbone is described.
 
 \iffalse
+% original abstract, still interesting for history
 Switches have several built-in security features. Most are of the pattern (1) create rule for a
 protocol (2) snoop traffic of that protocol (3) drop packets that violate the rule. Examples are
 DHCP snooping, dynamic ARP inspection, and MAC limiting. This paper proposes an automated switch
@@ -51,7 +52,6 @@ errors as well as malicious or rogue switches. Three modes of tool setup of vary
 detection capabilities are investigated: test-bench mode, deployed client-server mode, and deployed
 server-only mode.
 \fi
-% TODO update with results. And make sure it represents the paper as a whole.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -67,7 +67,6 @@ responsibility. A compromised or maliciously programmed switch poses fearsome th
 security. Due to its position between nodes on a LAN, a switch can greatly impact confidentiality,
 integrity, and availability of network services. Switches face threats to their inherent
 functionality as well as their features designed to secure higher level protocols.
-% TODO add some more details here after elaborate in Threats section
 
 As the threat to a LAN from a compromised switch is so significant, a number of prevention-oriented
 mitigations already exist. However, the impact of a compromised switch is great enough to warrant
@@ -84,7 +83,6 @@ A second method is proactive verification. This approach could take two forms: s
 and behavioral verification. Self-verification means using switch attestation to validate that it
 is running trusted firmware as well as booting into an approved configuration. Behavioral
 verification means running the switch through a suite of tests and verifying correct behavior.
-% INFO see https://en.wikipedia.org/wiki/Verification_and_validation
 
 \subsection{This Paper's Contribution}
 This paper begins by summarizing the current state of switch security. It next describes
@@ -95,15 +93,6 @@ network backbone.
 
 
 \section{The Switch Security Threat Landscape}
-% TODO "Vectors" or "Models"? Risk vs Threat vs Vulnerability vs Impact? Confirm wording in book
-% for now:
-% model: wholistic representation of risks, vectors, and mitigations
-% vector: a specific mode of attack
-% threat: an action or potential action that can harm the org
-% vulnerability: a known weakness that can be exploited by a threat
-% impact: the badness that occurs as a result of a realized threat
-% risk: threat (likeliness) x impact
-
 One could classify switch security threats many ways. In this paper, switch security is classified
 according to threats inherent in its network position and threats relating to higher level
 protocols.
@@ -316,8 +305,6 @@ verification approach. MAC limiting, DHCP snooping, DAI, and port security mitig
 
 
 \subsection{Encryption and Higher Level Protocols}
-% TODO e.g. https://www.senetas.com/products/cn-encryptors/ or
-%https://www.thalesesecurity.com/solutions/use-case/data-security-and-encryption/layer-2-encryption
 When mitigating security risk, besides decreasing likelihood, decreasing the cost of successful
 attacks is another valid approach. Using encryption in higher level protocols such as IPsec, TLS,
 SSH, and SFTP, or even using level 2 encryption \cite{b3} nearly eliminates a rogue switch's
@@ -349,8 +336,8 @@ verify that switches are operating trusted software stacks on trusted hardware. 
 methods for verifying client integrity are well understood \cite{b6}.
 % TODO expand on authentication a bit anyway
 
-% TODO could make a flow chart instead. Also, what if it is _not_ connected to a managed switch that
-% TODO is already part of the verified network?
+% TODO make a flow chart instead. Also, what if it is _not_ connected to a managed switch that
+% TODO is already part of the verified network? Then beyond the core trusted network; uncontrolled
 The basic authentication flow would be as follows:
 \begin{enumerate}
   \item A unknown switch joins the network. It is connected to a managed switch that is already
