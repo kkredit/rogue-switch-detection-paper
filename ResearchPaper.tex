@@ -424,9 +424,21 @@ administrative functions on managed switches, then runs through the test suite.
 
 
 
-\section{Building a Verified Network Backbone} \label{sec:policies}
+\section{Building a Verified Network Backbone}
+
+\subsection{Switch Addition}
 By establishing trust in switches using self-authentication and behavioral verification, network
-administrators can establish a core of trusted switches. Connections between trusted switches can
+administrators can establish a core or ``backbone'' of trusted switches. This backbone grows
+dynamically in accordance with the flow chart shown in Figure \ref{fig:switch-addition}.
+
+\begin{figure}[htbp]
+\centerline{\includegraphics[width=0.49\textwidth]{images/switch-addition}}
+\caption{The process of dynamically growing the trusted network backbone.}
+\label{fig:switch-addition}
+\end{figure}
+
+\subsection{Security Policies}\label{sec:policies}
+Connections between trusted switches can
 be configured permissively, while connections between trusted and untrusted switches can be
 configured with flexible security policies determining how to handle connections with new devices.
 Example policies range from strict to permissive:
