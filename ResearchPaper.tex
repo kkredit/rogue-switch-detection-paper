@@ -333,8 +333,11 @@ verification burden on the switch.
 \subsection{Self-authentication with a TPM}
 Using a Trusted Platform Module would enable the network to
 verify that switches are operating trusted software stacks on trusted hardware. Such attestation
-methods for verifying client integrity are well understood \cite{b6}.
-% TODO expand on authentication a bit anyway
+methods for verifying client integrity are well understood \cite{b6}. In particular, when a
+TPM-enabled device boots, the TPM generates a certification signed with its attestation identity
+key and a certificate from a trusted certification authority that was installed at time of
+manufacture; this certificate is sent to challengers during attestation; challengers verify the
+signatures and assign trust to the client \cite{b7}.
 
 % TODO make a flow chart instead. Also, what if it is _not_ connected to a managed switch that
 % TODO is already part of the verified network? Then beyond the core trusted network; uncontrolled
@@ -526,6 +529,9 @@ DC, 2007, pp. 355-360. doi: 10.1109/GLOCOM.2007.73
 \bibitem{b6} R. Sailer, T. Jaeger, X. Zhang, and L. van Doorn, ``Attestation-based policy
 enforcement for remote access,'' \textit{The 11th ACM conference on Computer and communications
 security (CCS '04)}, ACM, New York, NY, USA, 2004, pp. 308-317. doi: 10.1145/1030083.1030125
+
+\bibitem{b7} T. Garfinkel, M. Rosenblum and D. Boneh, ``Flexible OS Support and Applications for
+Trusted Computing'', in \textit{HotOS}, 2003, pp. 145-150.
 
 \end{thebibliography}
 
