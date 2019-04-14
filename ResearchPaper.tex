@@ -396,29 +396,51 @@ switches join the network as a verified element. Failing switches are treated ac
 network's security policy.
 
 The proposed tool has three modes that offer increasing thoroughness at the cost of increasing
-invasiveness.
+configuration and labor.
 
-\subsection{Deployed Server-only Mode}
-This mode of the tool only requires only a server. This server has knowledge of
+\subsection{Deployed Switch Server-only Mode}
+This mode of the tool only requires only a server. It is called ``deployed switch'' because the
+steps can be performed on switches that are already deployed and new switches require no special
+steps prior to deployment. The server has knowledge of
 the network topology and generates traffic in such a manner that tests the policies of the new
-switch. Because the server is not directly connected to the switch and is limited in what type of
-traffic it can generate, the properties it can test in this mode is limited. At minimum, if the
-switch is managed, the tool can log in to perform administrative functions that take the switch
-from an unknown to a known configuration.
-% TODO how can this practically be done? Can we really measure anything meaningful?
-% TODO how about getting around bound ports?--dedicated machine? then has it's own threats...
+switch. Server-only mode is limited in what traffic it can send. For example, if it sends traffic
+that violates security policies, it will be rejected on the way to the target switch.
+Server-only mode still allows for automatic switch configuration, though: when a new switch
+joins the network, the server detects the make and model, logs in, and sends the appropriate
+configuration commands.
+\subsubsection{Advantages}
+\begin{itemize}
+	\item Low configuration overhead
+	\item Can automatically configure new switches
+\end{itemize}
+\subsubsection{Disadvantages}
+\begin{itemize}
+	\item Very limited live-traffic behavioral verification
+\end{itemize}
 
-\subsection{Deployed Client-server Mode}
-This mode of the tool requires a server with knowledge of the network topology as well as clients
-running on suitable hosts. The server coordinates the clients to generate a more thorough set of
-test traffic. Because of the additional nodes available to the tool, possibly including devices
+\subsection{Deployed Switch Client-server Mode}
+This mode of the tool adds the concept of clients that assist the server in generating and detecting
+policy-testing traffic. Suitable hosts for the client application include endpoints and managed
+switches themselves. The server coordinates the clients to generate a as thorough a set of
+test traffic as possible. Because of the additional nodes available to the tool, possibly including
+devices
 attached directly to the switch, the properties it can test in this mode are more thorough. The
 server still logs in to perform administrative functions on managed switches.
+\subsubsection{Advantages}
+\begin{itemize}
+	\item Can automatically configure new switches
+	\item More capable live-traffic behavioral verification
+\end{itemize}
+\subsubsection{Disadvantages}
+\begin{itemize}
+	\item High configuration overhead
+\end{itemize}
 % TODO what protocols can we use to test things? ICMP, Echo, SNMP?
 
 \subsection{Test-bench Mode}
 This mode of the tool requires only a server, but requires that the switch be taken out of
-deployment. By sequentially testing each port of the switch with arbitrary traffic, the server is
+deployment or tested before deployment. By sequentially testing each port of the switch with
+arbitrary traffic, the server is
 able to fully verify all the behavior expected of the switch. It begins by logging in to perform
 administrative functions on managed switches, then runs through the test suite.
 
