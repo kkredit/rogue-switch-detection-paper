@@ -442,8 +442,27 @@ This mode of the tool requires only a server, but requires that the switch be ta
 deployment or tested before deployment. By sequentially testing each port of the switch with
 arbitrary traffic, the server is
 able to fully verify all the behavior expected of the switch. It begins by logging in to perform
-administrative functions on managed switches, then runs through the test suite.
+administrative functions on managed switches, then runs through the test suite. Once the switch has
+been tested, its MAC address and test result are saved in the server's database. When it connects to
+the network in deployment, the server recognizes it and assigns trust to it.
+\subsubsection{Advantages}
+\begin{itemize}
+	\item Can automatically configure new switches
+	\item Fully capable live-traffic behavioral verification
+\end{itemize}
+\subsubsection{Disadvantages}
+\begin{itemize}
+	\item Requires manual labor
+	\item Cannot be performed on deployed switches
+\end{itemize}
 
+\subsection{Generating Test Traffic}
+Test traffic is generated from the server and clients in order to test the target switch's behavior.
+In order to test DHCP Snooping, for example, a client will send generated DHCP offers out of port
+67. To test DAI, a client will send generated ARP messages. On a Unix-like system, this can be
+crudely achieved as simply as \texttt{cat message.file | nc -nu -p source\_port dest\_addr
+dest\_port}. More direct approaches can be used. Depending on the host operating system, the client
+may need root access to send traffic on ports below 1024.
 
 
 \section{Building a Verified Network Backbone}
