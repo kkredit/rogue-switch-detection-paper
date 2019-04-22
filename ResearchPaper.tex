@@ -30,10 +30,10 @@ Email: k.kredit.us@ieee.org}
 
 
 \begin{abstract}
-Though level 2 switches bear great responsibility in LAN security, detecting rogue switches is
+Though switches bear great responsibility in LAN security, detecting rogue switches is
 difficult. This paper reviews the threat landscape around switches, overviews rogue switch
 prevention measures, and proposes a new double-pronged rogue switch prevention and detection
-mechanism. The first prong is TPM-enalbed remote attestation of switches and setting configurations.
+mechanism. The first prong is TPM-enabled remote attestation of switches and setting configurations.
 The second prong is behavioral verification of switches using generated traffic. The tool leverages
 defined switch behavior and the presence of switch security features to detect mis-configured and
 potentially malicious switches. Together, the forms of verification support strong assurance as well
@@ -76,7 +76,7 @@ further research, particularly in how to detect rogue switches.
 How does one detect a disobedient network switch? One method is passive detection, usually by
 observing network traffic and parsing it for suspicious behavior. This approach lies solidly within
 the realm of intrusion detection systems (IDSs). Machine learning promises a new level of
-effectiveness for IDSs, though they is historically only partially effective and by their nature
+effectiveness for IDSs, though they are historically only partially effective and by their nature
 offer only probabilistic insight.
 
 A second method is proactive verification. This approach could take two forms: self-verification
@@ -113,14 +113,14 @@ integrity, and availability:
   \item Denial of service (availability)
 \end{enumerate}
 
-Traffic redirection is to route packets to the wrong port, an additional port, or even to internal
+Traffic redirection is to route packets to the wrong port, an additional port, or even internal
 storage. Redirection can be used for man-in-the-middle (MITM) or exfiltration attacks. Traffic
 modification is to rewrite data as it passes through the switch. This is an MITM attack. Denial of
-service is failing to deliver packets at all. This could be done selectively or completely. All
-three could be designed to evade IDSs. Redirection could be to internal storage, which would leave
-no network trace; modification could be selective, and require comparison of all inbound and
-outbound traffic to detect; and denial of service could be selective or strategically timed such
-when it is detected, it is too late.
+service is failing to deliver packets to their destination. This could be done selectively or
+completely. All three could be designed to evade IDSs. Redirection could be to internal storage,
+which would leave no network trace; modification could be selective, and require comparison of all
+inbound and outbound traffic to detect; and denial of service could be selective or strategically
+timed such when it is detected, it is too late.
 
 While switch integrity is clearly violated in an arbitrarily programmed malicious switch,
 non-malicious switches can also be compromised by malicious hosts. Two ways this is done are
@@ -146,12 +146,12 @@ convenient place to implement defenses against attacks on these higher level pro
 
 % TODO finalize scope of this paper
 This paper focuses not on how to configure the switch security features that defend DHCP and ARP,
-but on rogue switch security implications and detection. The threat considered here is not ``rogue
+but on rogue switch detection and security implications. The threat considered here is not ``rogue
 DHCP'' or ``ARP spoofing,'' but that of a compromised switch which uses misapplications of these
 security features to enable further attacks. For example, a compromised switch could block the valid
 DHCP server and enable a rogue DHCP server.
 
-In order to understand the impacts of a rogue switch, therefore, one must understand their high
+In order to understand the impacts of a rogue switch, therefore, one must understand these high
 level protocol security features. In addition to their importance to rogue switch impact, these
 features provide a possible means for rogue switch detection.
 
@@ -279,7 +279,7 @@ are presented before this paper's contribution is considered.
 
 \subsubsection{Password management}
 Changing switches' administrative credentials from the default is the first step in securing the
-level 2 network. Changing the credentials is more important than enforcing physical security
+local area network. Changing the credentials is more important than enforcing physical security
 because failing to do so enables effortless, automated remote compromise. Even if the organization
 does not intend to implement switches' available security features, changing the default
 credentials is necessary to prevent an attacker from configuring the switch to his interests. This
@@ -299,7 +299,7 @@ host sending malicious traffic, and 1(c), a software vulnerability in the networ
 
 \subsubsection{Implementing available security features}
 After the previous steps have been taken, implementing the switches' available security features is
-the next logical step, and indeed is a prerequisite the more capable versions of the active
+the next logical step, and indeed is a prerequisite the more capable variations of the active
 verification approach. MAC limiting, DHCP snooping, DAI, and port security mitigate threat vectors
 1(a), a host sending malicious traffic, and 2(b), switch insertion at public facing ports \cite{b1}.
 
@@ -334,7 +334,7 @@ verification burden on the switch.
 Using a Trusted Platform Module would enable the network to
 verify that switches are operating trusted software stacks on trusted hardware. Such attestation
 methods for verifying client integrity are well understood \cite{b6}. In particular, when a
-TPM-enabled device boots, the TPM generates a certification signed with its attestation identity
+TPM-enabled device boots, the TPM generates a certificate signed with its attestation identity
 key and a certificate from a trusted certification authority that was installed at time of
 manufacture; this certificate is sent to challengers during attestation; challengers verify the
 signatures and assign trust to the client \cite{b7}.
@@ -367,17 +367,16 @@ section \ref{sec:policies}.
 \subsection{Self-authentication Without a TPM}
 Self-authentication can be achieved without a TPM if switches are pre-configured with a shared
 secret. While this allows self-authentication with current-generation hardware, it is vulnerable
-to spoofing if the secret is compromised and it is less automated as it requires manual
-configuration.
+to spoofing if the secret is compromised and is less automated as it requires manual configuration.
 
 
 
 \section{The Behavioral Verification Tool}
 Self-authentication is the preferred means of switch validation. However, switches typically are
-outfitted with TPMs. Even if that were to begin, organizations would rightly not be able to justify
-the cost of updating the millions of deployed switches worldwide for the sake of this feature. In
-order to build a verified network backbone, there needs to be a way to validate currently deployed
-switches.
+not outfitted with TPMs. Even if that were to begin, organizations would rightly not be able to
+justify the cost of updating the millions of deployed switches worldwide for the sake of this
+feature. In order to build a verified network backbone, there needs to be a way to validate
+currently deployed switches.
 
 This paper proposes a behavioral verification tool that establishes trust in switches by putting
 them through thorough tests. Such test-based trust is not as strong as attestation. All cases could
@@ -405,7 +404,7 @@ steps prior to deployment. The server has knowledge of
 the network topology and generates traffic in such a manner that tests the policies of the new
 switch. Server-only mode is limited in what traffic it can send. For example, if it sends traffic
 that violates security policies, it will be rejected on the way to the target switch.
-Server-only mode still allows for automatic switch configuration, though: when a new switch
+Even so, server-only mode still allows for automatic switch configuration: when a new switch
 joins the network, the server detects the make and model, logs in, and sends the appropriate
 configuration commands.
 \subsubsection{Advantages}
@@ -421,8 +420,8 @@ configuration commands.
 \subsection{Deployed Switch Client-server Mode}
 This mode of the tool adds the concept of clients that assist the server in generating and detecting
 policy-testing traffic. Suitable hosts for the client application include endpoints and managed
-switches themselves. The server coordinates the clients to generate a as thorough a set of
-test traffic as possible. Because of the additional nodes available to the tool, possibly including
+switches themselves. The server coordinates the clients to generate as thorough a set of test
+traffic as possible. Because of the additional nodes available to the tool, possibly including
 devices
 attached directly to the switch, the properties it can test in this mode are more thorough. The
 server still logs in to perform administrative functions on managed switches.
@@ -479,10 +478,9 @@ dynamically in accordance with the flow chart shown in Figure \ref{fig:switch-ad
 \end{figure}
 
 \subsection{Security Policies}\label{sec:policies}
-Connections between trusted switches can
-be configured permissively, while connections between trusted and untrusted switches can be
-configured with flexible security policies determining how to handle connections with new devices.
-Example policies range from strict to permissive:
+Connections between trusted switches can be configured permissively, while connections between
+trusted and untrusted switches can be configured with variable amounts of strictness depending on
+the level of trust assigned to the switch. Example policies include the following:
 \begin{itemize}
   \item Strict: until a new switch is successfully verified (attested or tested),
   \begin{itemize}
@@ -513,8 +511,8 @@ of the network, an example being the number of hosts allowed to connect through 
 \section{Conclusion}
 Rogue and compromised switches represent grave threats to LAN security. Though relatively low in
 likelihood, preventing and detecting rogue switches is a valuable step to take. After taking the
-necessary basic steps in securing the LAN and using encrypted communications when possible,
-switch validation allows the creation of verified LAN backbones. TPM-based remote attestation
+necessary basic steps in securing the LAN and using encrypted communications when possible, active
+switch verification allows the creation of verified LAN backbones. TPM-based remote attestation
 enables strong verification, while behavior-based verification enables backwards compatibility with
 currently deployed equipment. Both measures mitigate the threat of rogue switches through active
 prevention and detection.
